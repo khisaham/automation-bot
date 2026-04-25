@@ -8,9 +8,13 @@ const { rand } = require("./src/human");
 chromium.use(stealth());
 
 const EXCEL_FILE = "./applicants.xlsx";
-const SHEET_NAME = "Sheet1";
+const SHEET_NAME = "Applicants";
 
 async function main() {
+  const browser = await chromium.launch({ headless: false });
+
+  console.log("Starting application process...");
+
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.readFile(EXCEL_FILE);
   const sheet = workbook.getWorksheet(SHEET_NAME);
@@ -27,8 +31,6 @@ async function main() {
   if (!headers["application id"]) {
     sheet.getRow(1).getCell(appIdCol).value = "Application ID";
   }
-
-  const browser = await chromium.launch({ headless: false }); // headless:false so you can watch
 
   for (let rowNum = 2; rowNum <= sheet.rowCount; rowNum++) {
     const row = sheet.getRow(rowNum);
@@ -53,6 +55,7 @@ async function main() {
       course: get("course"), // e.g. "Computer Science"
       universityUrl: get("university url"), // e.g. "https://liber.edu/apply"
     };
+    console.log(`\nRow ${rowNum}: Processing ${person.firstName} ${person.lastName}... ${person.universityUrl}`);
 
     const context = await browser.newContext({
       viewport: { width: rand(1200, 1440), height: rand(700, 900) },
