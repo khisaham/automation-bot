@@ -12,6 +12,10 @@ const SHEET_NAME = "Applicants";
 
 async function main() {
   const browser = await chromium.launch({ headless: false });
+  browser.contexts().forEach((ctx) => {
+    ctx.setDefaultTimeout(0);
+    ctx.setDefaultNavigationTimeout(0);
+  });
 
   console.log("Starting application process...");
 
@@ -53,7 +57,7 @@ async function main() {
       address: get("address"),
       courseLevel: get("course level"), // e.g. "undergraduate"
       course: get("course"), // e.g. "Computer Science"
-      universityUrl: get("university url"), // e.g. "https://liber.edu/apply"
+      universityUrl: get("university url"),
     };
     console.log(`\nRow ${rowNum}: Processing ${person.firstName} ${person.lastName}... ${person.universityUrl}`);
 
@@ -62,6 +66,8 @@ async function main() {
       locale: "en-US",
       timezoneId: "America/New_York",
     });
+    context.setDefaultTimeout(0); // disables 30s timeout
+    context.setDefaultNavigationTimeout(0);
     const page = await context.newPage();
 
     try {
