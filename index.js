@@ -59,7 +59,7 @@ async function main() {
       course: get("course"), // e.g. "Computer Science"
       universityUrl: get("university url"),
     };
-   
+   console.log('some changes on console log');
     const context = await browser.newContext({
       viewport: { width: rand(1200, 1440), height: rand(700, 900) },
       locale: "en-US",
